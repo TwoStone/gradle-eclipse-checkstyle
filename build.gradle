@@ -1,0 +1,35 @@
+plugins {
+    id "com.gradle.plugin-publish" version "0.9.1"
+}
+
+apply plugin: 'java-gradle-plugin'
+apply plugin: 'eclipse'
+apply plugin: 'checkstyle'
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+group 'com.github.twostone.gradle'
+version '1.0.0'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile localGroovy()
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+pluginBundle {
+    website = 'https://github.com/TwoStone/gradle-eclipse-checkstyle'
+    vcsUrl = 'https://github.com/TwoStone/gradle-eclipse-checkstyle.git'
+    description = 'The Gradle Eclipse Checkstyle Plugin adds the checkstyle style nature and buildcommands to your eclipse project and generates a checkstyle configuration based on your gradle checkstyle settings.'
+    tags = ['eclipse', 'checkstyle']
+
+    plugins {
+        'eclipse-checkstyle-plugin' {
+            id = 'com.github.twostone.eclipse-checkstyle'
+            displayName = 'Gradle Eclipse Checkstyle Plugin'
+        }
+    }
+}
