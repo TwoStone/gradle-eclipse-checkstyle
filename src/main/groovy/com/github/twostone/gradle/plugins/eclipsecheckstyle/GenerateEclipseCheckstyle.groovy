@@ -2,6 +2,7 @@ package com.github.twostone.gradle.plugins.eclipsecheckstyle
 
 import groovy.xml.MarkupBuilder
 import org.gradle.api.DefaultTask
+import org.gradle.api.plugins.quality.Checkstyle
 import org.gradle.api.plugins.quality.CheckstyleExtension
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -19,19 +20,14 @@ public class GenerateEclipseCheckstyle extends DefaultTask{
     @OutputFile
     File outputFile
 
-    @Input
-    EclipseModel eclipseModel
-
-    @Input
-    CheckstyleExtension checkstyleExtension
-
     @TaskAction
     def doAction() {
+        CheckstyleExtension extension = project.extensions.getByName('checkstyle')
+
         def writer = outputFile.withWriter {
             def xml = new MarkupBuilder(it)
-            def configLocation = checkstyleExtension.configFile.toPath().resolve(project.projectDir.toPath()).toString()
+            def configLocation = extension.configFile.toPath().resolve(project.projectDir.toPath()).toString()
             def configName = "${project.name} - Gradle Eclipse Checkstyle"
-
 
             xml.'fileset-config'('file-format-version':'1.2.0', 'simple-config':true, 'sync-formatter': false) {
                 'local-check-config'(

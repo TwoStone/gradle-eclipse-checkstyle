@@ -1,12 +1,10 @@
 plugins {
-    id "com.gradle.plugin-publish" version "0.9.1"
+    id 'com.gradle.plugin-publish' version '0.9.1'
+    id 'org.gradle.java'
+    id 'org.gradle.eclipse'
+    id 'org.gradle.groovy'
+    id 'org.gradle.java-gradle-plugin'
 }
-
-apply plugin: 'java-gradle-plugin'
-apply plugin: 'eclipse'
-apply plugin: 'checkstyle'
-apply plugin: 'java'
-apply plugin: 'groovy'
 
 group 'com.github.twostone.gradle'
 version '1.0.0'
@@ -15,9 +13,25 @@ repositories {
     jcenter()
 }
 
+// Write the plugin's classpath to a file to share with the tests
+task createClasspathManifest {
+    def outputDir = file("$buildDir/$name")
+
+    inputs.files sourceSets.main.runtimeClasspath
+    outputs.dir outputDir
+
+    doLast {
+        outputDir.mkdirs()
+        file("$outputDir/plugin-classpath.txt").text = sourceSets.main.runtimeClasspath.join("\n")
+    }
+}
+
 dependencies {
     compile localGroovy()
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    testCompile gradleTestKit()
+    testCompile 'junit:junit:4.12'
+    testRuntime files(createClasspathManifest)
 }
 
 pluginBundle {
